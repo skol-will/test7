@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>IFL Playoff Predictor 2025/26 Season</title>
 <style>
-  /* Reset & basics */
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
       Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -43,44 +42,54 @@
     gap: 12px;
   }
   .team-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    background: #222;
-    border-radius: 8px;
+    position: relative;
+    width: 140px;
+    height: 40px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 0.25s ease;
-    border: 2px solid transparent;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 0 2px transparent;
+    transition: box-shadow 0.25s ease, filter 0.25s ease;
+    user-select: none;
   }
-  .team-card img {
-    height: 32px;
-    width: 32px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-  .team-card .team-name {
-    font-weight: 600;
-    font-size: 1.05rem;
+  .team-card:hover:not(.disabled):not(.selected) {
+    filter: brightness(1.15);
   }
   .team-card.selected {
-    background: #0a74da;
-    border-color: #0a74da;
+    box-shadow: 0 0 8px 3px #0a74da;
   }
   .team-card.disabled {
-    opacity: 0.4;
-    pointer-events: none;
+    filter: grayscale(100%) brightness(0.6);
+    cursor: default;
   }
-  /* Responsive for small phones */
+  .team-name-overlay {
+    position: absolute;
+    bottom: 3px;
+    left: 6px;
+    right: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    text-shadow:
+      1px 1px 3px rgba(0,0,0,0.85),
+      -1px -1px 3px rgba(0,0,0,0.85);
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Responsive tweaks */
   @media (max-width: 360px) {
     h1 {
       font-size: 1.5rem;
     }
     .team-card {
-      padding: 8px 10px;
+      width: 120px;
+      height: 34px;
     }
-    .team-card .team-name {
-      font-size: 0.95rem;
+    .team-name-overlay {
+      font-size: 12px;
     }
   }
   /* Continue button */
@@ -119,29 +128,23 @@
     <h2>World East Division</h2>
   </div>
   <div class="team-list">
-    <div class="team-card" data-division="world-east" data-team="Australia Whites">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182184/australia-whites_h9o2vz.png" alt="Australia Whites" />
-      <div class="team-name">Australia Whites</div>
+    <div class="team-card" data-division="world-east" data-team="Australia Whites" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182184/australia-whites_h9o2vz.png')">
+      <div class="team-name-overlay">Australia Whites</div>
     </div>
-    <div class="team-card" data-division="world-east" data-team="Italia Bulls">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/italia-bulls_aocvis.png" alt="Italia Bulls" />
-      <div class="team-name">Italia Bulls</div>
+    <div class="team-card" data-division="world-east" data-team="Italia Bulls" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/italia-bulls_aocvis.png')">
+      <div class="team-name-overlay">Italia Bulls</div>
     </div>
-    <div class="team-card" data-division="world-east" data-team="Belarus Barbarians">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/belarus-barbarians_ydx3kz.png" alt="Belarus Barbarians" />
-      <div class="team-name">Belarus Barbarians</div>
+    <div class="team-card" data-division="world-east" data-team="Belarus Barbarians" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/belarus-barbarians_ydx3kz.png')">
+      <div class="team-name-overlay">Belarus Barbarians</div>
     </div>
-    <div class="team-card" data-division="world-east" data-team="Singapore Smelters">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/singapore-smelters_qn3ges.png" alt="Singapore Smelters" />
-      <div class="team-name">Singapore Smelters</div>
+    <div class="team-card" data-division="world-east" data-team="Singapore Smelters" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/singapore-smelters_qn3ges.png')">
+      <div class="team-name-overlay">Singapore Smelters</div>
     </div>
-    <div class="team-card" data-division="world-east" data-team="South Korea Deers">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/southkorea-deers_jbt02f.png" alt="South Korea Deers" />
-      <div class="team-name">South Korea Deers</div>
+    <div class="team-card" data-division="world-east" data-team="South Korea Deers" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/southkorea-deers_jbt02f.png')">
+      <div class="team-name-overlay">South Korea Deers</div>
     </div>
-    <div class="team-card" data-division="world-east" data-team="Poland Panthers">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/poland-panthers_ppg3zr.png" alt="Poland Panthers" />
-      <div class="team-name">Poland Panthers</div>
+    <div class="team-card" data-division="world-east" data-team="Poland Panthers" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/poland-panthers_ppg3zr.png')">
+      <div class="team-name-overlay">Poland Panthers</div>
     </div>
   </div>
 </div>
@@ -152,29 +155,23 @@
     <h2>World Central Division</h2>
   </div>
   <div class="team-list">
-    <div class="team-card" data-division="world-central" data-team="Germany Cavaliers">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/germany-cavaliers_qrcojc.png" alt="Germany Cavaliers" />
-      <div class="team-name">Germany Cavaliers</div>
+    <div class="team-card" data-division="world-central" data-team="Germany Cavaliers" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/germany-cavaliers_qrcojc.png')">
+      <div class="team-name-overlay">Germany Cavaliers</div>
     </div>
-    <div class="team-card" data-division="world-central" data-team="UK 3 Lions">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/uk-tri-lions_kyixfr.png" alt="UK 3 Lions" />
-      <div class="team-name">UK 3 Lions</div>
+    <div class="team-card" data-division="world-central" data-team="UK 3 Lions" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/uk-tri-lions_kyixfr.png')">
+      <div class="team-name-overlay">UK 3 Lions</div>
     </div>
-    <div class="team-card" data-division="world-central" data-team="Finaland Frigate">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/finland-frigate_u7rjbj.png" alt="Finaland Frigate" />
-      <div class="team-name">Finaland Frigate</div>
+    <div class="team-card" data-division="world-central" data-team="Finland Frigate" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/finland-frigate_u7rjbj.png')">
+      <div class="team-name-overlay">Finland Frigate</div>
     </div>
-    <div class="team-card" data-division="world-central" data-team="Belgium Bulldogs">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/belgium-bulldogs_hrx8td.png" alt="Belgium Bulldogs" />
-      <div class="team-name">Belgium Bulldogs</div>
+    <div class="team-card" data-division="world-central" data-team="Belgium Bulldogs" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/belgium-bulldogs_hrx8td.png')">
+      <div class="team-name-overlay">Belgium Bulldogs</div>
     </div>
-    <div class="team-card" data-division="world-central" data-team="Holland Hornets">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/holland-hornets_ilzroo.png" alt="Holland Hornets" />
-      <div class="team-name">Holland Hornets</div>
+    <div class="team-card" data-division="world-central" data-team="Holland Hornets" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/holland-hornets_ilzroo.png')">
+      <div class="team-name-overlay">Holland Hornets</div>
     </div>
-    <div class="team-card" data-division="world-central" data-team="South Africa Silverbacks">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/southafrica-silverbaks_x6but2.png" alt="South Africa Silverbacks" />
-      <div class="team-name">South Africa Silverbacks</div>
+    <div class="team-card" data-division="world-central" data-team="South Africa Silverbacks" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/southafrica-silverbaks_x6but2.png')">
+      <div class="team-name-overlay">South Africa Silverbacks</div>
     </div>
   </div>
 </div>
@@ -185,29 +182,23 @@
     <h2>World West Division</h2>
   </div>
   <div class="team-list">
-    <div class="team-card" data-division="world-west" data-team="USA Drones">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182187/usa-drones_doeba8.png" alt="USA Drones" />
-      <div class="team-name">USA Drones</div>
+    <div class="team-card" data-division="world-west" data-team="USA Drones" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182187/usa-drones_doeba8.png')">
+      <div class="team-name-overlay">USA Drones</div>
     </div>
-    <div class="team-card" data-division="world-west" data-team="Jamaica Thunder">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/jamaica-thunder_ogo7aj.png" alt="Jamaica Thunder" />
-      <div class="team-name">Jamaica Thunder</div>
+    <div class="team-card" data-division="world-west" data-team="Jamaica Thunder" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/jamaica-thunder_ogo7aj.png')">
+      <div class="team-name-overlay">Jamaica Thunder</div>
     </div>
-    <div class="team-card" data-division="world-west" data-team="Rwanda Raiders">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/rwanda-raiders_aqtgu7.png" alt="Rwanda Raiders" />
-      <div class="team-name">Rwanda Raiders</div>
+    <div class="team-card" data-division="world-west" data-team="Rwanda Raiders" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/rwanda-raiders_aqtgu7.png')">
+      <div class="team-name-overlay">Rwanda Raiders</div>
     </div>
-    <div class="team-card" data-division="world-west" data-team="Egypt Pharaohs">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/egypt-pharaohs_ycglpl.png" alt="Egypt Pharaohs" />
-      <div class="team-name">Egypt Pharaohs</div>
+    <div class="team-card" data-division="world-west" data-team="Egypt Pharaohs" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/egypt-pharaohs_ycglpl.png')">
+      <div class="team-name-overlay">Egypt Pharaohs</div>
     </div>
-    <div class="team-card" data-division="world-west" data-team="Peru Piranhas">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/peru-piranhas_yueas6.png" alt="Peru Piranhas" />
-      <div class="team-name">Peru Piranhas</div>
+    <div class="team-card" data-division="world-west" data-team="Peru Piranhas" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/peru-piranhas_yueas6.png')">
+      <div class="team-name-overlay">Peru Piranhas</div>
     </div>
-    <div class="team-card" data-division="world-west" data-team="Brazil Hummingbirds">
-      <img src="https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/brazil-hummingbirds_dras9r.png" alt="Brazil Hummingbirds" />
-      <div class="team-name">Brazil Hummingbirds</div>
+    <div class="team-card" data-division="world-west" data-team="Brazil Hummingbirds" style="background-image: url('https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/brazil-hummingbirds_dras9r.png')">
+      <div class="team-name-overlay">Brazil Hummingbirds</div>
     </div>
   </div>
 </div>
@@ -215,7 +206,6 @@
 <button id="continue-btn" disabled>Continue to Wildcard Selection</button>
 
 <script>
-  // Track selected winners per division
   const selectedWinners = {
     "world-east": null,
     "world-central": null,
@@ -236,15 +226,12 @@
     const division = card.dataset.division;
     const team = card.dataset.team;
 
-    // If clicking already selected card, unselect it
     if (selectedWinners[division] === team) {
       selectedWinners[division] = null;
     } else {
-      // Select new team for division
       selectedWinners[division] = team;
     }
 
-    // Update UI: For each division, mark selected and disable others
     Object.entries(selectedWinners).forEach(([div, selectedTeam]) => {
       const cardsInDiv = document.querySelectorAll(`.team-card[data-division="${div}"]`);
       cardsInDiv.forEach(c => {
@@ -257,7 +244,6 @@
             c.classList.add("disabled");
           }
         } else {
-          // No selection: all enabled & no selection class
           c.classList.remove("selected");
           c.classList.remove("disabled");
         }
@@ -271,11 +257,9 @@
     card.addEventListener("click", handleTeamClick);
   });
 
-  // TODO: Add event for continue button later, currently just logs selection
   continueBtn.addEventListener("click", () => {
     console.log("Division Winners Selected:", selectedWinners);
     alert("Division winners selected:\n" + JSON.stringify(selectedWinners, null, 2));
-    // Here you can add logic to go to Stage 2 overlay later
   });
 </script>
 
