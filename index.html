@@ -270,6 +270,115 @@
     console.log("Division Winners Selected:", selectedWinners);
     alert("Division winners selected:\n" + JSON.stringify(selectedWinners, null, 2));
   });
+  <!-- Stage 2: Wildcard Selection -->
+<div id="stage2" style="display:none; text-align: center; padding: 20px;">
+  <h2 style="margin-bottom: 10px;">Select 5 Wildcard Teams</h2>
+  <p style="margin-bottom: 20px;">Tap to select wildcard teams. You may only pick five. Division winners are not eligible.</p>
+  <div id="wildcardTeamsContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;"></div>
+
+  <div style="margin-top: 20px;">
+    <button onclick="goBackToStage1()" style="margin-right: 10px; padding: 10px 20px; font-size: 16px;">Back to Division Winners</button>
+    <button onclick="proceedToBracket()" id="continueToBracketBtn" disabled style="padding: 10px 20px; font-size: 16px;">Continue to Bracket</button>
+  </div>
+</div>
+
+<script>
+  const allTeams = [
+    { name: "Australia Whites", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182184/australia-whites_h9o2vz.png" },
+    { name: "Italia Bulls", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/italia-bulls_aocvis.png" },
+    { name: "Belarus Barbarians", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/belarus-barbarians_ydx3kz.png" },
+    { name: "Singapore Smelters", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/singapore-smelters_qn3ges.png" },
+    { name: "South Korea Deers", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/southkorea-deers_jbt02f.png" },
+    { name: "Poland Panthers", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/poland-panthers_ppg3zr.png" },
+
+    { name: "Germany Cavaliers", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/germany-cavaliers_qrcojc.png" },
+    { name: "UK 3 Lions", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/uk-tri-lions_kyixfr.png" },
+    { name: "Finland Frigate", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/finland-frigate_u7rjbj.png" },
+    { name: "Belgium Bulldogs", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/belgium-bulldogs_hrx8td.png" },
+    { name: "Holland Hornets", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/holland-hornets_ilzroo.png" },
+    { name: "South Africa Silverbacks", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/southafrica-silverbaks_x6but2.png" },
+
+    { name: "USA Drones", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182187/usa-drones_doeba8.png" },
+    { name: "Jamaica Thunder", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/jamaica-thunder_ogo7aj.png" },
+    { name: "Rwanda Raiders", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/rwanda-raiders_aqtgu7.png" },
+    { name: "Egypt Pharaohs", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/egypt-pharaohs_ycglpl.png" },
+    { name: "Peru Piranhas", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/peru-piranhas_yueas6.png" },
+    { name: "Brazil Hummingbirds", logo: "https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/brazil-hummingbirds_dras9r.png" },
+  ];
+
+  let selectedWildcards = [];
+  let divisionWinners = [];
+
+  function showStage2(winners) {
+    divisionWinners = winners;
+    const container = document.getElementById("wildcardTeamsContainer");
+    container.innerHTML = "";
+
+    const filteredTeams = allTeams.filter(team => !divisionWinners.includes(team.name));
+
+    filteredTeams.forEach(team => {
+      const card = document.createElement("div");
+      card.className = "team-card";
+      card.style.cssText = `
+        width: 140px;
+        height: 40px;
+        background-image: url('${team.logo}');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      `;
+
+      const name = document.createElement("span");
+      name.innerText = team.name;
+      name.style.cssText = `
+        color: white;
+        text-shadow: 1px 1px 2px black;
+        font-weight: bold;
+        font-size: 12px;
+        text-align: center;
+        padding: 2px 5px;
+      `;
+
+      card.appendChild(name);
+
+      card.addEventListener("click", () => toggleWildcardSelection(team.name, card));
+      container.appendChild(card);
+    });
+
+    document.getElementById("stage1").style.display = "none";
+    document.getElementById("stage2").style.display = "block";
+  }
+
+  function toggleWildcardSelection(teamName, cardElement) {
+    const index = selectedWildcards.indexOf(teamName);
+    if (index > -1) {
+      selectedWildcards.splice(index, 1);
+      cardElement.style.outline = "none";
+    } else {
+      if (selectedWildcards.length >= 5) return;
+      selectedWildcards.push(teamName);
+      cardElement.style.outline = "3px solid dodgerblue";
+    }
+    document.getElementById("continueToBracketBtn").disabled = selectedWildcards.length !== 5;
+  }
+
+  function goBackToStage1() {
+    document.getElementById("stage1").style.display = "block";
+    document.getElementById("stage2").style.display = "none";
+  }
+
+  function proceedToBracket() {
+    // Placeholder for bracket stage logic
+    alert("Proceeding with:\nWinners: " + divisionWinners.join(", ") + "\nWildcards: " + selectedWildcards.join(", "));
+  }
+</script>
+
 </script>
 
 </body>
