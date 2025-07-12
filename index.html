@@ -88,7 +88,7 @@
     pointer-events: none;
   }
 
-  #continue-btn {
+  #continue-btn, #back-btn {
     background: #00BFFF;
     color: white;
     border: none;
@@ -100,8 +100,45 @@
     transition: background 0.2s;
   }
 
-  #continue-btn:hover {
+  #continue-btn:hover, #back-btn:hover {
     background: #0099cc;
+  }
+
+  #continue-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
+
+  /* Stage 2 overlay */
+  #stage2 {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.95);
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  #stage2 h2 {
+    margin-bottom: 20px;
+  }
+
+  #wildcard-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    max-width: 500px;
+    margin: 0 auto 20px auto;
+  }
+
+  #wildcard-list .team-card {
+    flex: 0 0 140px;
+  }
+
+  #selected-count {
+    font-weight: bold;
+    margin-bottom: 10px;
   }
 
   @media (max-width: 500px) {
@@ -113,6 +150,10 @@
     .team-card span {
       font-size: 0.8rem;
     }
+
+    #wildcard-list .team-card {
+      flex: 0 0 120px;
+    }
   }
 </style>
 </head>
@@ -123,6 +164,7 @@
   IFL Playoff Predictor 2025/26 Season
 </h1>
 
+<!-- Stage 1 -->
 <div id="stage1">
   <h2>Select a Division Winner from Each Division</h2>
 
@@ -231,6 +273,14 @@
   <button id="continue-btn" disabled>Continue to Wildcards</button>
 </div>
 
+<!-- Stage 2 Overlay -->
+<div id="stage2">
+  <h2>Select 5 Wildcard Teams</h2>
+  <div id="selected-count">Selected: 0 / 5</div>
+  <div id="wildcard-list"></div>
+  <button id="back-btn">Back to Division Winners</button>
+</div>
+
 <script>
   const divisions = ['world-east', 'world-central', 'world-west'];
   let selectedWinners = {
@@ -240,16 +290,22 @@
   };
 
   const continueBtn = document.getElementById('continue-btn');
+  const stage1 = document.getElementById('stage1');
+  const stage2 = document.getElementById('stage2');
+  const wildcardList = document.getElementById('wildcard-list');
+  const selectedCountEl = document.getElementById('selected-count');
+  const backBtn = document.getElementById('back-btn');
 
-  // Get all team cards
-  const teamCards = document.querySelectorAll('.team-card');
+  // Selectable team cards in Stage 1
+  const teamCards = document.querySelectorAll('#stage1 .team-card');
 
+  // --- Stage 1: Division Winner Selection ---
   teamCards.forEach(card => {
     card.addEventListener('click', () => {
       const division = card.dataset.division;
 
-      // If clicked already selected card -> deselect
       if (selectedWinners[division] === card) {
+        // Deselect if clicked again
         card.classList.remove('selected');
         selectedWinners[division] = null;
       } else {
@@ -262,18 +318,18 @@
         card.classList.add('selected');
       }
 
-      // Disable other cards in this division if one is selected
+      // Disable other cards in this division if one selected
       teamCards.forEach(c => {
         if (c.dataset.division === division && c !== selectedWinners[division]) {
           c.classList.toggle('disabled', !!selectedWinners[division]);
         }
       });
 
-      // Enable continue if all divisions have a selected winner
+      // Enable continue button only if all divisions have a selection
       continueBtn.disabled = !divisions.every(div => selectedWinners[div]);
     });
 
-    // Also allow keyboard selection with Enter key for accessibility
+    // Keyboard accessibility
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -281,7 +337,111 @@
       }
     });
   });
+
+  // --- Stage 2: Wildcard Selection ---
+
+  // All teams data: division + name + logo (flatten all teams here for wildcard)
+  const allTeams = [
+    // World East
+    { division: 'world-east', name: 'Australia Whites', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182184/australia-whites_h9o2vz.png' },
+    { division: 'world-east', name: 'Italia Bulls', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/italia-bulls_aocvis.png' },
+    { division: 'world-east', name: 'Belarus Barbarians', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/belarus-barbarians_ydx3kz.png' },
+    { division: 'world-east', name: 'Singapore Smelters', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/singapore-smelters_qn3ges.png' },
+    { division: 'world-east', name: 'South Korea Deers', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/southkorea-deers_jbt02f.png' },
+    { division: 'world-east', name: 'Poland Panthers', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/poland-panthers_ppg3zr.png' },
+
+    // World Central
+    { division: 'world-central', name: 'Germany Cavaliers', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/germany-cavaliers_qrcojc.png' },
+    { division: 'world-central', name: 'UK 3 Lions', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/uk-tri-lions_kyixfr.png' },
+    { division: 'world-central', name: 'Finland Frigate', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/finland-frigate_u7rjbj.png' },
+    { division: 'world-central', name: 'Belgium Bulldogs', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/belgium-bulldogs_hrx8td.png' },
+    { division: 'world-central', name: 'Holland Hornets', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/holland-hornets_ilzroo.png' },
+    { division: 'world-central', name: 'South Africa Silverbacks', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/southafrica-silverbaks_x6but2.png' },
+
+    // World West
+    { division: 'world-west', name: 'USA Drones', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182187/usa-drones_doeba8.png' },
+    { division: 'world-west', name: 'Jamaica Thunder', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/jamaica-thunder_ogo7aj.png' },
+    { division: 'world-west', name: 'Rwanda Raiders', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182186/rwanda-raiders_aqtgu7.png' },
+    { division: 'world-west', name: 'Egypt Pharaohs', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/egypt-pharaohs_ycglpl.png' },
+    { division: 'world-west', name: 'Peru Piranhas', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/peru-piranhas_yueas6.png' },
+    { division: 'world-west', name: 'Brazil Hummingbirds', logo: 'https://res.cloudinary.com/de4q4iitx/image/upload/v1752182185/brazil-hummingbirds_dras9r.png' },
+  ];
+
+  let selectedWildcards = new Set();
+
+  // Function to build wildcard cards excluding division winners
+  function buildWildcardList() {
+    wildcardList.innerHTML = '';
+    selectedWildcards.clear();
+    updateSelectedCount();
+
+    // Get division winners names
+    const winners = Object.values(selectedWinners).map(card => card?.dataset.team).filter(Boolean);
+
+    // Filter all teams excluding division winners
+    const wildcardTeams = allTeams.filter(t => !winners.includes(t.name));
+
+    wildcardTeams.forEach(team => {
+      const card = document.createElement('div');
+      card.className = 'team-card';
+      card.tabIndex = 0;
+      card.dataset.team = team.name;
+      card.dataset.division = team.division;
+
+      card.innerHTML = `
+        <img src="${team.logo}" alt="${team.name}" />
+        <span>${team.name}</span>
+      `;
+
+      // Toggle selection on click
+      card.addEventListener('click', () => {
+        if (selectedWildcards.has(team.name)) {
+          selectedWildcards.delete(team.name);
+          card.classList.remove('selected');
+        } else {
+          if (selectedWildcards.size < 5) {
+            selectedWildcards.add(team.name);
+            card.classList.add('selected');
+          } else {
+            alert('You can select only 5 wildcard teams.');
+          }
+        }
+        updateSelectedCount();
+      });
+
+      // Keyboard accessibility
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+
+      wildcardList.appendChild(card);
+    });
+  }
+
+  function updateSelectedCount() {
+    selectedCountEl.textContent = `Selected: ${selectedWildcards.size} / 5`;
+  }
+
+  continueBtn.addEventListener('click', () => {
+    // Show Stage 2
+    stage1.style.display = 'none';
+    stage2.style.display = 'block';
+    buildWildcardList();
+  });
+
+  backBtn.addEventListener('click', () => {
+    // Back to Stage 1
+    stage2.style.display = 'none';
+    stage1.style.display = 'block';
+
+    // Clear wildcard selections for safety
+    selectedWildcards.clear();
+  });
 </script>
 
 </body>
 </html>
+
